@@ -1,0 +1,7 @@
+{
+	"token": "token-here",
+	"pollRate": 60,
+	"url": "https://example.com/data",
+	"channelId": "channel-id-here",
+	"cssSelector": "css-selector-here"
+}

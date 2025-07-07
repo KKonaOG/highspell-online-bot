@@ -1,0 +1,13 @@
+{
+  "name": "online_player_bot",
+  "version": "1.0.0",
+  "description": "Fetches online player count from HighSpell website and displays it in discord",
+  "main": "index.js",
+  "author": "Mayube",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.10.0",
+    "cheerio": "^1.1.0",
+    "discord.js": "^14.21.0"
+  }
+}
