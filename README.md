@@ -20,8 +20,8 @@ Config is a simple JSON file. Copy `config.dev.json` to `config.json` and edit v
 - `pollRate` **Required**: Number of seconds between updates. Each update fetches the page and updates the discord message
 - `url` **Required**: Exact URL to fetch page from
 - `channelId` **Required**: Discord ChannelId
-- `cssSelector` **Required**: A standard [CSS Selector]() used to extract the member count from the page
-- `embed` *Optional*: Any custom parameters for the message embed. See [discord.js docs]() for details on accepted properties.
+- `cssSelector` **Required**: A standard [CSS Selector](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors) used to extract the member count from the page
+- `embed` *Optional*: Any custom parameters for the message embed. See [discord.js docs](https://discordjs.guide/popular-topics/embeds.html#using-an-embed-object) for details on accepted properties.
 
 ### Default Embed settings
 These properties, plus any omitted properties, will be overridden by provided properties in the config file
