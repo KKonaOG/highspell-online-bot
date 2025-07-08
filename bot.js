@@ -58,7 +58,7 @@ export default class OnlineBot {
 
         // Lazy async interval, re-queue polling
         if (this.running)
-            setTimeout(this.poll, this.config.pollRate * 1000);
+            setTimeout(this.poll.bind(this), this.config.pollRate * 1000);
     }
 
     /**
