@@ -7,11 +7,11 @@ export default class OnlineBot {
      * @param {Config} config
      * @param {Client} client
      */
-    __constructor(config, client) {
-        this.discordClient = client;
+    constructor(config, client) {
+        this.client = client;
         this.config = config;
 
-        this.messageRef = this.getOrSendMessage();
+		this.messageRef = undefined;
         this.cachedCount = undefined;
 
         this.running = false;
@@ -23,18 +23,20 @@ export default class OnlineBot {
     run() {
         this.running = true;
 
-        client.once('ready', this.onReady.bind(this));
-        client.login(config.token);
+        this.client.once('ready', this.onReady.bind(this));
+        this.client.login(this.config.token);
     }
 
     /**
      * Handler for discord client ready event
      * @param {Client} readyClient
      */
-    onReady(readyClient) {
+    async onReady(readyClient) {
         util.log(`Bot is online, logged in as ${readyClient.user.tag}`);
         const formattedPollRate = util.formatPollRate(this.config.pollRate);
         util.log(`Polling active member count from '${this.config.url}' every ${formattedPollRate}`);
+
+        this.messageRef = await this.getOrSendMessage();
 
         // Start polling
         this.poll();
@@ -45,22 +47,18 @@ export default class OnlineBot {
      */
     async poll() {
         util.log("Polling site...");
-        const newCount = await fetchMemberCount();
+        const newCount = await this.fetchMemberCount();
         util.log(`Fetched member count: ${newCount}`);
 
-        if (newCount !== undefined && !Number.isNaN(newCount) && newCount !== cachedCount) {
-            cachedCount = newCount;
-
-            if (!messageRef)
-                messageRef = await findOrSendMessage(config.channelId);
-            else
-                await messageRef.edit(buildMessage());
+        if (newCount !== undefined && !Number.isNaN(newCount) && newCount !== this.cachedCount) {
+            this.cachedCount = newCount;
+			await this.messageRef.edit(this.buildMessage());
             util.log(`Updated message`);
         }
 
         // Lazy async interval, re-queue polling
         if (this.running)
-            setTimeout(poll, config.pollRate * 1000);
+            setTimeout(this.poll, this.config.pollRate * 1000);
     }
 
     /**
@@ -69,11 +67,11 @@ export default class OnlineBot {
      * @returns A reference to the found or newly sent message
      */
     async getOrSendMessage() {
-        const channel = await client.channels.fetch(this.channelId);
+        const channel = await this.client.channels.fetch(this.config.channelId);
         if (!channel || !channel.isTextBased())
             throw new Error(`Could not find channel with ID '${this.channelId}' or it is not a text channel.`);
         // TODO: Find existing message
-        const message = await channel.send(buildMessage());
+        const message = await channel.send(this.buildMessage());
 
         return message;
     }
