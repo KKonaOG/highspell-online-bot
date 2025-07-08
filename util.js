@@ -32,7 +32,6 @@ export function validateConfig(config) {
 }
 
 export function formatPollRate(pollRate) {
-	const pollRate = config.pollRate;
 	const pollMinutes = Math.floor(pollRate / 60);
 	const pollSeconds = pollRate % 60;
 	let pollText = ''
