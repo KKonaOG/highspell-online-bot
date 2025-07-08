@@ -1,11 +1,11 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import * as util from './util';
+import * as util from './util.js';
 
 export default class OnlineBot {
     /**
-     * @param {Config} config 
-     * @param {Client} client 
+     * @param {Config} config
+     * @param {Client} client
      */
     __constructor(config, client) {
         this.discordClient = client;
@@ -29,7 +29,7 @@ export default class OnlineBot {
 
     /**
      * Handler for discord client ready event
-     * @param {Client} readyClient 
+     * @param {Client} readyClient
      */
     onReady(readyClient) {
         util.log(`Bot is online, logged in as ${readyClient.user.tag}`);
