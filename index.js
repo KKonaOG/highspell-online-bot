@@ -1,5 +1,5 @@
 import { validateConfig } from './util.js';
-import * as config from './config.json' with { type: "json" };
+import config from './config.json' with { type: "json" };
 // Throws if config is invalid
 validateConfig(config);
 
