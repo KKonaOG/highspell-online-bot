@@ -70,10 +70,20 @@ export default class OnlineBot {
         const channel = await this.client.channels.fetch(this.config.channelId);
         if (!channel || !channel.isTextBased())
             throw new Error(`Could not find channel with ID '${this.channelId}' or it is not a text channel.`);
-        // TODO: Find existing message
-        const message = await channel.send(this.buildMessage());
-
-        return message;
+        // Find messages from our bot containing an embed in the last 10 messages
+		const messages = await channel.messages.fetch({ limit: 10, cache: false });
+		const botMessages = messages.filter(msg => msg.author.id === this.client.user.id && msg.embeds.length > 0);
+		if (botMessages.size > 0) {
+			// Sort messages by created timestamp, newest first
+			botMessages.sort((a, b) => b.createdTimestamp - a.createdTimestamp);
+			const message = botMessages.first();
+			util.log(`Found existing message with ID '${message.id}'`);
+			return message;
+		} else {
+			const message = await channel.send(this.buildMessage());
+			util.log(`Sent new message with ID '${message.id}'`);
+			return message;
+		}
     }
 
     /**
