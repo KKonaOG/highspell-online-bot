@@ -1,4 +1,3 @@
-import axios from 'axios';
 import * as cheerio from 'cheerio';
 import * as util from './util.js';
 
@@ -13,6 +12,7 @@ export default class OnlineBot {
 
 		this.messageRef = undefined;
         this.cachedCount = undefined;
+		this.worldsCount = [];
 
         this.running = false;
     }
@@ -47,8 +47,14 @@ export default class OnlineBot {
      */
     async poll() {
         util.log("Polling site...");
-        const newCount = await this.fetchMemberCount();
+        const newCount = await this.fetchTotalMemberCount();
         util.log(`Fetched member count: ${newCount}`);
+
+		// If worlds count is enabled, fetch it as well
+		if (this.config.worldsCount) {
+			this.worldsCount = await this.fetchWorldsMemberCount();
+			util.log(`Fetched worlds count: ${this.worldsCount}`);
+		}
 
         if (newCount !== undefined && !Number.isNaN(newCount) && newCount !== this.cachedCount) {
             this.cachedCount = newCount;
@@ -103,6 +109,13 @@ export default class OnlineBot {
             url: this.config.url,
             description: `Current member count: ${countText}`,
             timestamp: new Date().toISOString(),
+			fields: this.worldsCount.map((c, i) => {
+				return {
+					name: `World ${i + 1}`,
+					value: `**${c}**`,
+					inline: true
+				};
+			})
         };
 
         // Apply config embed if it exists
@@ -125,12 +138,10 @@ export default class OnlineBot {
      * Fetches the configured page and extracts the member count from it
      * @returns {number} The new member count
      */
-    async fetchMemberCount() {
+    async fetchTotalMemberCount() {
         try {
-            const response = await axios.get(this.config.url);
-            const $ = cheerio.load(response.data);
-
-            const siteCount = $(this.config.cssSelector).text();
+			const element = await util.fetchData(this.config.totalCount);
+			const siteCount = element.text();
             const count = parseInt(siteCount.trim());
 
             if (Number.isNaN(count)) {
@@ -139,7 +150,28 @@ export default class OnlineBot {
 
             return count;
         } catch (err) {
-            util.error('Error fetching member count:', err.message);
+            util.error(`Error fetching member count: ${err.message}`);
         }
     }
+
+	async fetchWorldsMemberCount() {
+		try {
+			const element = await util.fetchData(this.config.worldsCount);
+			const worldsCount = [];
+			for (let i of element) {
+				const siteCount = i.firstChild.data;
+				const count = parseInt(siteCount.trim());
+
+				if (Number.isNaN(count)) {
+					throw new Error(`Could not parse worlds member count from the site. Expected a number but got '${siteCount.trim()}'`);
+				}
+
+				worldsCount.push(count);
+			}
+
+			return worldsCount;
+        } catch (err) {
+            util.error(`Error fetching member count: ${err.message}`);
+        }
+	}
 }

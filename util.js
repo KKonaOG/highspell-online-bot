@@ -1,3 +1,6 @@
+import axios from 'axios';
+import * as cheerio from 'cheerio';
+
 // JS has terrible date formatting utilities
 // This function formats the current date in YYYY-MM-DD HH:II:SS format
 export function formatDate() {
@@ -23,12 +26,30 @@ export function validateConfig(config) {
         throw new Error("Token not found! Please set your bot token in 'config.json'.");
     if (!config.pollRate || config.pollRate <= 0)
         throw new Error("Invalid poll rate! Please set a positive integer for 'pollRate' in 'config.json'.");
-    if (!config.url || config.url.startsWith("https://example.com"))
-        throw new Error("Invalid URL! Please set a valid URL in 'config.json'.");
     if (!config.channelId || config.channelId == "channel-id")
         throw new Error("Invalid channel ID! Please set a valid channel ID in 'config.json'.");
-    if (!config.cssSelector)
-        throw new Error("Invalid CSS Selector! Please provide a valid CSS Selector to identify member count in 'config.json'.");
+
+	if (config.totalCount !== undefined) {
+		if (!config.totalCount.url || config.totalCount.url.startsWith("https://example.com"))
+			throw new Error("Invalid Total Count URL! Please set a valid URL in 'config.json'.");
+		if (!config.totalCount.cssSelector)
+			throw new Error("Invalid Total Count CSS Selector! Please provide a valid CSS Selector to identify member count in 'config.json'.");
+	} else {
+		log("Total count fetching is disabled. Ensure 'totalCount' is set in 'config.json'.");
+	}
+
+	if (config.worldsCount !== undefined) {
+		if (!config.worldsCount.url || config.worldsCount.url.startsWith("https://example.com"))
+			throw new Error("Invalid Worlds Count URL! Please set a valid URL in 'config.json'.");
+		if (!config.worldsCount.cssSelector)
+			throw new Error("Invalid Worlds Count CSS Selector! Please provide a valid CSS Selector to identify member count in 'config.json'.");
+	} else {
+		log("Worlds count fetching is disabled. Ensure 'worldsCount' is set in 'config.json'.");
+	}
+
+	if (!config.totalCount && !config.worldsCount) {
+		throw new Error("At least one of 'totalCount' or 'worldsCount' must be defined in 'config.json'.");
+	}
 }
 
 export function formatPollRate(pollRate) {
@@ -43,4 +64,22 @@ export function formatPollRate(pollRate) {
 	if (pollMinutes > 0) pollText += ` (${pollRate} seconds)`;
 
     return pollText;
+}
+
+export async function fetchData(config) {
+	try {
+		const response = await axios.get(config.url);
+		const $ = cheerio.load(response.data);
+
+		let element = $(config.cssSelector);
+		if (config.negativeCssSelector !== undefined)
+			element = element.not(config.negativeCssSelector);
+
+		if (config.subCssSelector !== undefined)
+			element = element.find(config.subCssSelector);
+
+		return element;
+	} catch (err) {
+		error(`Error fetching data from ${config.url}: ${err.message}`);
+	}
 }

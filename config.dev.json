@@ -1,7 +1,17 @@
 {
 	"token": "token-here",
 	"pollRate": 60,
-	"url": "https://example.com/data",
 	"channelId": "channel-id-here",
-	"cssSelector": "css-selector-here"
+
+	"totalCount": {
+		"url": "https://highspell.com",
+		"cssSelector": "div#users-online-section span"
+	},
+
+	"worldsCount": {
+		"url": "https://highspell.com/play",
+		"cssSelector": "li.hs_data__row",
+		"negativeCssSelector": "li#server_data__header-row",
+		"subCssSelector": "div.server_data__row__right-container div.server_data__row__playercount"
+	}
 }
