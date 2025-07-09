@@ -11,18 +11,18 @@ Config is a simple JSON file. Copy `config.dev.json` to `config.json` and edit v
     token,
     pollRate,
     channelId,
-	totalCount: {
-		url,
-		cssSelector,
-		negativeCssSelector,
-		subCssSelector
-	},
-	worldsCount: {
-		url,
-		cssSelector,
-		negativeCssSelector,
-		subCssSelector
-	}
+    totalCount: {
+        url,
+        cssSelector,
+        negativeCssSelector,
+        subCssSelector
+    },
+    worldsCount: {
+        url,
+        cssSelector,
+        negativeCssSelector,
+        subCssSelector
+    }
     embed
 }
 ```
@@ -30,15 +30,15 @@ Config is a simple JSON file. Copy `config.dev.json` to `config.json` and edit v
 - `pollRate` **Required**: Number of seconds between updates. Each update fetches the page and updates the discord message
 - `channelId` **Required**: Discord ChannelId
 - `totalCount` *Optional*: If present, provides config for fetching the total member count from the Highspell main page.
-	- `url` **Required**: Exact URL to fetch page from
-	- `cssSelector` **Required**: A standard [CSS Selector](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors) used to extract the member count from the page
-	- `negativeCssSelector` *Optional*: A CSS Selector to exclude elements fetched by `cssSelector`. This is useful for excluding elements that are not part of the member count.
-	- `subCssSelector` *Optional*: A CSS Selector to further narrow down the selection of elements fetched by `cssSelector` after applying `negativeCssSelector`. This is useful for cases where the member count is nested within other elements.
+    - `url` **Required**: Exact URL to fetch page from
+    - `cssSelector` **Required**: A standard [CSS Selector](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors) used to extract the member count from the page
+    - `negativeCssSelector` *Optional*: A CSS Selector to exclude elements fetched by `cssSelector`. This is useful for excluding elements that are not part of the member count.
+    - `subCssSelector` *Optional*: A CSS Selector to further narrow down the selection of elements fetched by `cssSelector` after applying `negativeCssSelector`. This is useful for cases where the member count is nested within other elements.
 - `worldsCount` *Optional*: If present, provides config for fetching the total member count from the Highspell main page.
-	- `url` **Required**: Exact URL to fetch page from
-	- `cssSelector` **Required**: A standard [CSS Selector](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors) used to extract the member count from the page
-	- `negativeCssSelector` *Optional*: A CSS Selector to exclude elements fetched by `cssSelector`. This is useful for excluding elements that are not part of the member count.
-	- `subCssSelector` *Optional*: A CSS Selector to further narrow down the selection of elements fetched by `cssSelector` after applying `negativeCssSelector`. This is useful for cases where the member count is nested within other elements.
+    - `url` **Required**: Exact URL to fetch page from
+    - `cssSelector` **Required**: A standard [CSS Selector](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors) used to extract the member count from the page
+    - `negativeCssSelector` *Optional*: A CSS Selector to exclude elements fetched by `cssSelector`. This is useful for excluding elements that are not part of the member count.
+    - `subCssSelector` *Optional*: A CSS Selector to further narrow down the selection of elements fetched by `cssSelector` after applying `negativeCssSelector`. This is useful for cases where the member count is nested within other elements.
 - `embed` *Optional*: Any custom parameters for the message embed. See [discord.js docs](https://discordjs.guide/popular-topics/embeds.html#using-an-embed-object) for details on accepted properties.
 
 ### Default Embed settings
@@ -50,7 +50,7 @@ These properties, plus any omitted properties, will be overridden by provided pr
     url: config.url,
     description: `Current member count: ${memberCount}`,
     timestamp: new Date().toISOString(),
-	fields: <world specific fields if `config.worldsCount` is set>
+    fields: <world specific fields if `config.worldsCount` is set>
 }
 ```
 It is not recommended to override `description` or `timestamp`, as values provided in the config file are constant and cannot be evaluated at runtime.
