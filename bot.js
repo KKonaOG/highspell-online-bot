@@ -122,8 +122,12 @@ export default class OnlineBot {
         const configEmbed = this.config.embed;
         if (configEmbed) {
             for (const key in configEmbed) {
-                if (configEmbed.hasOwnProperty(key))
-                    embed[key] = configEmbed[key];
+                if (configEmbed.hasOwnProperty(key)) {
+					if (key === 'fields')
+						embed[key] = embed[key].concat(configEmbed[key]);
+					else
+						embed[key] = configEmbed[key];
+				}
             }
         }
 
