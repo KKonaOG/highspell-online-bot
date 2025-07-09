@@ -22,7 +22,7 @@ Config is a simple JSON file. Copy `config.dev.json` to `config.json` and edit v
         cssSelector,
         negativeCssSelector,
         subCssSelector
-    }
+    },
     embed
 }
 ```
