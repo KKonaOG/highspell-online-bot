@@ -2,7 +2,7 @@
 A simple discord to periodically fetch online member count from [Highspell main page](https://highspell.com) and update a discord message.
 
 ## Setup and Usage
-This is a simple node.js application. Clone the repository, run `npm install` in the directory, and then run `node index.js` to start the bot.
+This is a simple node.js application. Clone the repository, run `npm install` in the directory, and then run `npm start` to start the bot.
 
 ## Config
 Config is a simple JSON file. Copy `config.dev.json` to `config.json` and edit values as appropriate.
