@@ -46,21 +46,26 @@ export default class OnlineBot {
      * Main update loop
      */
     async poll() {
-        util.log("Polling site...");
-        const newCount = await this.fetchTotalMemberCount();
-        util.log(`Fetched member count: ${newCount}`);
+		try {
+			util.log("Polling site...");
+			const newCount = await this.fetchTotalMemberCount();
+			util.log(`Fetched member count: ${newCount}`);
 
-		// If worlds count is enabled, fetch it as well
-		if (this.config.worldsCount) {
-			this.worldsCount = await this.fetchWorldsMemberCount();
-			util.log(`Fetched worlds count: ${this.worldsCount}`);
+			// If worlds count is enabled, fetch it as well
+			if (this.config.worldsCount) {
+				this.worldsCount = await this.fetchWorldsMemberCount();
+				util.log(`Fetched worlds count: ${this.worldsCount}`);
+			}
+
+			if (newCount !== undefined && !Number.isNaN(newCount) && newCount !== this.cachedCount) {
+				this.cachedCount = newCount;
+				await this.messageRef.edit(this.buildMessage());
+				util.log(`Updated message`);
+			}
+		} catch (err) {
+			util.error(`Error during polling: ${err.message}`);
+			this.running = false;
 		}
-
-        if (newCount !== undefined && !Number.isNaN(newCount) && newCount !== this.cachedCount) {
-            this.cachedCount = newCount;
-			await this.messageRef.edit(this.buildMessage());
-            util.log(`Updated message`);
-        }
 
         // Lazy async interval, re-queue polling
         if (this.running)
